@@ -1,0 +1,4 @@
+.DS_Store
+data/Result files/
+outputs/objects/
+*.h5ad

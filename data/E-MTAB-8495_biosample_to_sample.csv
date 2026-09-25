@@ -1,0 +1,23 @@
+biosd_sample,acronym,individual,organism_part,growth_condition,stimulus
+SAMEA8235346,ORG_CBD_1,Donor 1,common bile duct,organoid,none
+SAMEA8235347,ORG_CBD_2,Donor 2,common bile duct,organoid,none
+SAMEA8235353,ORG_GB_1,Donor 4,gall bladder,organoid,none
+SAMEA8235354,ORG_GB_2,Donor 5,gall bladder,organoid,none
+SAMEA8235360,ORG_IHD_1,Donor 7,intrahepatic bile duct,organoid,none
+SAMEA8235361,ORG_IHD_2,Donor 8,intrahepatic bile duct,organoid,none
+SAMEA8235362,ORG_T1_1,Donor 7,intrahepatic bile duct,organoid,bile
+SAMEA8235355,ORG_T1_2,Donor 4,gall bladder,organoid,bile
+SAMEA8235348,ORG_T2_1,Donor 8,common bile duct,organoid,bile
+SAMEA8235363,ORG_T2_1,Donor 8,intrahepatic bile duct,organoid,bile
+SAMEA8235356,ORG_T2_3,Donor 5,gall bladder,organoid,bile
+SAMEA8235349,ORG_T2_4,Donor 2,common bile duct,organoid,bile
+SAMEA8235350,PRI_CBD_S,Donor 1,common bile duct,primary tissue,none
+SAMEA8235351,PRI_CBD_U_1,Donor 2,common bile duct,primary tissue,none
+SAMEA8235352,PRI_CBD_U_2,Donor 3,common bile duct,primary tissue,none
+SAMEA8235357,PRI_GB_S,Donor 4,gall bladder,primary tissue,none
+SAMEA8235358,PRI_GB_U_1,Donor 5,gall bladder,primary tissue,none
+SAMEA8235359,PRI_GB_U_2,Donor 6,gall bladder,primary tissue,none
+SAMEA8235364,PRI_IHD_1,Donor 7,intrahepatic bile duct,primary tissue,none
+SAMEA8235365,PRI_IHD_2,Donor 8,intrahepatic bile duct,primary tissue,none
+SAMEA8235366,PRI_IHD_3,Donor 9,intrahepatic bile duct,primary tissue,none
+SAMEA8235367,PRI_IHD_B,Donor 10,intrahepatic bile duct,primary tissue,none
