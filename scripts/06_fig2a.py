@@ -1,6 +1,14 @@
 """
 Step 06 -- Fig.2A analog: full-dataset (primary + organoid + bile-treated)
-UMAP, colored by origin and by region side by side.
+UMAP, colored by the 9 origin x region categories in a single panel, matching
+Fig.2A of Sampaziotis et al. 2021 (Science 371:839-846).
+
+Colors and layout approximated BY EYE from the published figure: boxed panel
+(all 4 spines visible), black-edged filled points, one legend below the axes
+laid out as a 3x3 grid (columns = region: IHD/CBD/GB, rows = origin:
+PRI/ORG/BTO), plain "UMAP 1"/"UMAP 2" axis-label text, no panel title. Exact
+hex values are not published by the authors -- this is a visual
+approximation, not a machine-verified palette match.
 
 Input:  outputs/objects/04_cluster_full_clustered.h5ad
 Output: outputs/figures/06_fig2a_full_umap.png / .pdf
@@ -9,46 +17,41 @@ import matplotlib.pyplot as plt
 import scanpy as sc
 
 ROOT = "/Users/brian/Desktop/RDM/scRNA-seq"
-REGION_COLORS = {"IHD": "#1b9e77", "CBD": "#d95f02", "GB": "#7570b3"}
-ORIGIN_COLORS = {"PRI": "#e41a1c", "ORG": "#999999", "BTO": "#4daf4a"}
+
+CAT_COLORS = {
+    "PRI IHD": "#D4A017", "ORG IHD": "#2166AC", "BTO IHD": "#E67E22",
+    "PRI CBD": "#7C8C3C", "ORG CBD": "#2E7D32", "BTO CBD": "#C2A66B",
+    "PRI GB":  "#A13D2B", "ORG GB":  "#7EC8E3", "BTO GB":  "#6E4B1D",
+}
+# legend layout matches the paper: 3 columns (IHD, CBD, GB) x 3 rows (PRI, ORG, BTO)
+LEGEND_ORDER = ["PRI IHD", "ORG IHD", "BTO IHD",
+                "PRI CBD", "ORG CBD", "BTO CBD",
+                "PRI GB",  "ORG GB",  "BTO GB"]
 
 
 def main():
     adata = sc.read_h5ad(f"{ROOT}/outputs/objects/04_cluster_full_clustered.h5ad")
     emb, obs = adata.obsm["X_umap"], adata.obs
+    obs = obs.assign(cat=obs["origin"].astype(str) + " " + obs["region"].astype(str))
 
-    fig, axes = plt.subplots(1, 2, figsize=(9.6, 4.6))
+    fig, ax = plt.subplots(figsize=(6.4, 5.6))
+    for cat in LEGEND_ORDER:
+        m = (obs["cat"] == cat).values
+        ax.scatter(emb[m, 0], emb[m, 1], s=3, c=CAT_COLORS[cat], edgecolors="black",
+                   linewidths=0.05, alpha=0.85, label=cat, rasterized=True)
 
-    ax = axes[0]
-    for org, c in ORIGIN_COLORS.items():
-        m = (obs["origin"] == org).values
-        ax.scatter(emb[m, 0], emb[m, 1], s=2, alpha=0.35, color=c, linewidths=0, label=org, rasterized=True)
     ax.set_xticks([]); ax.set_yticks([])
-    for s in ax.spines.values():
-        s.set_visible(False)
-    ax.legend(loc="upper left", frameon=False, markerscale=3, fontsize=8, bbox_to_anchor=(0.0, 1.0))
-    ax.set_title("Colored by origin", fontsize=9)
-    ax.margins(0.05)
-    ax.annotate("", xy=(0.16, 0.02), xytext=(0.02, 0.02), xycoords="axes fraction",
-                arrowprops=dict(arrowstyle="->", lw=1.1, color="black"))
-    ax.annotate("", xy=(0.02, 0.16), xytext=(0.02, 0.02), xycoords="axes fraction",
-                arrowprops=dict(arrowstyle="->", lw=1.1, color="black"))
-    ax.text(0.09, -0.015, "UMAP1", transform=ax.transAxes, fontsize=7, ha="center", va="top")
-    ax.text(-0.015, 0.09, "UMAP2", transform=ax.transAxes, fontsize=7, ha="right", va="center", rotation=90)
+    for spine in ax.spines.values():
+        spine.set_visible(True)
+        spine.set_linewidth(0.8)
+        spine.set_color("black")
+    ax.margins(0.04)
+    ax.set_xlabel("UMAP 1", fontsize=9, labelpad=4)
+    ax.set_ylabel("UMAP 2", fontsize=9, labelpad=4)
 
-    ax = axes[1]
-    for reg, c in REGION_COLORS.items():
-        m = (obs["region"] == reg).values
-        ax.scatter(emb[m, 0], emb[m, 1], s=2, alpha=0.35, color=c, linewidths=0, label=reg, rasterized=True)
-    ax.set_xticks([]); ax.set_yticks([])
-    for s in ax.spines.values():
-        s.set_visible(False)
-    ax.legend(loc="upper left", frameon=False, markerscale=3, fontsize=8, bbox_to_anchor=(0.0, 1.0))
-    ax.set_title("Colored by region", fontsize=9)
-    ax.margins(0.05)
-
-    fig.suptitle(f"Organoids converge across regions and partially re-diverge after bile treatment "
-                 f"(n={adata.n_obs:,} cells)", fontsize=10, y=1.03)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.08), ncol=3, frameon=False,
+              markerscale=2.2, fontsize=7.5, handletextpad=0.4, labelspacing=0.6,
+              columnspacing=1.2)
     fig.tight_layout()
 
     fig.savefig(f"{ROOT}/outputs/figures/06_fig2a_full_umap.png", dpi=600)

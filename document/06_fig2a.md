@@ -21,3 +21,13 @@
 ## Still open
 - This is a qualitative reproduction of the reported topology, not a quantitative match to Fig.2A's exact cell positions (different batch-correction method and requantified counts, per document/03_normalize.md and document/02_qc.md).
 
+## Revision (style match to the published figure)
+
+Redrawn as a **single panel** colored by the full 9-way origin x region
+category (PRI/ORG/BTO x IHD/CBD/GB), replacing the earlier two-panel
+(origin-only, region-only) layout, to match Fig.2A's actual design. Colors,
+black point outlines, boxed axes (all 4 spines), plain "UMAP 1"/"UMAP 2"
+axis-label text, and the 3x3 legend grid (columns = region, rows = origin)
+are approximated **by eye** from the published PDF -- the authors did not
+release a machine-readable palette, so these hex values are a visual match,
+not a verified one. See `scripts/06_fig2a.py` for the exact color table.
