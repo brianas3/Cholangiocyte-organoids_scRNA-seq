@@ -47,6 +47,12 @@ pipeline -- the matrix itself (>2 GB) is not committed to this repo.
    to a single region, so Harmony on donor/sample erased region structure.
 5. `05_fig1b.py` / `06_fig2a.py` -- render the two UMAP figures (from 04b / 04c;
    vector PDF + 600 dpi PNG). `05b_seed_robustness.py` -- UMAP seeds 0-4.
+6. `08_region_classifier.py` -- region-identity (IHD/CBD/GB) classifier: multinomial
+   logistic regression on 2000 HVGs, trained on primary cells only, validated with
+   leave-one-donor-out CV, compared with an 18-gene marker model (paper Fig. 1D/1E
+   markers, `data/metadata/region_markers_ensembl.json`), then applied to ORG/BTO.
+7. `09_figS1a.py` -- Supplementary Fig. S1A analog (full-dataset UMAP coloured by
+   sample, one colour + marker per sample).
 
 ## Key results (see `document/07_summary.md` for full detail)
 
@@ -56,6 +62,26 @@ pipeline -- the matrix itself (>2 GB) is not committed to this repo.
 | Full dataset cells (Fig. 2A) | 40,732 | 35,603 |
 | Louvain ARI vs. origin (mean, 10 seeds) | 0.65 | >0.95 |
 | Louvain ARI vs. region (mean, 10 seeds) | 0.01 | <0.30 |
+
+**Region classifier (step 08)**: leave-one-donor-out balanced accuracy 0.976 (HVG
+model) / 0.937 (18 markers); per-region recall IHD 0.95, CBD 0.98, GB 1.00. Donor 8/9
+(12/13 cells) are 0.58/0.62 and not interpretable. Applied to organoids, the
+primary-trained model gives mostly CBD/GB-mixed probabilities for ORG (regional
+identity not evident) and p(GB) 0.86-0.94 for every BTO region (shift toward GB after
+bile). Caveats: domain shift (culture genes) so probabilities are relative, not
+calibrated; only 2 samples per ORG/BTO group; HVGs chosen once on all primary cells.
+Outputs: `outputs/figures/08_region_classifier.*`, `outputs/tables/08_*.csv`.
+
+**Fig. S1A analog (step 09)**: all 22 E-MTAB-8495 samples drawn; "PRI IHD 5"
+(MacParland 2018, external) is absent. The legend numbers "1/2/3" are NOT the paper's:
+the paper does not publish its sample-to-label key, so numbers are assigned by ascending
+`biosd_sample` ID within each origin x region group (ORG/BTO 1 vs 2 may be swapped
+relative to the paper; BTO acronyms use a different naming scheme than ORG). Colours are
+approximated by eye. The UMAP is the donor/sample-centered layout (04c), so within-
+category sample mixing is partly by construction and is not an independent batch check.
+Note: the `individual` field for ORG/BTO samples in the source metadata is unreliable
+(e.g. a BTO CBD sample labelled "Donor 8", the same label as a primary IHD donor); all
+organoid analyses use `biosd_sample`.
 
 Qualitative conclusions reproduce: primary cholangiocytes retain
 region-specific identity (Fig. 1B analog), organoid culture erases that
