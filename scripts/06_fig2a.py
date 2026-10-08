@@ -10,7 +10,7 @@ PRI/ORG/BTO), plain "UMAP 1"/"UMAP 2" axis-label text, no panel title. Exact
 hex values are not published by the authors -- this is a visual
 approximation, not a machine-verified palette match.
 
-Input:  outputs/objects/04_cluster_full_clustered.h5ad
+Input:  outputs/objects/04c_full_nocorrect_umap.h5ad
 Output: outputs/figures/06_fig2a_full_umap.png / .pdf
 """
 import matplotlib.pyplot as plt
@@ -30,7 +30,7 @@ LEGEND_ORDER = ["PRI IHD", "ORG IHD", "BTO IHD",
 
 
 def main():
-    adata = sc.read_h5ad(f"{ROOT}/outputs/objects/04_cluster_full_clustered.h5ad")
+    adata = sc.read_h5ad(f"{ROOT}/outputs/objects/04c_full_nocorrect_umap.h5ad")
     emb, obs = adata.obsm["X_umap"], adata.obs
     obs = obs.assign(cat=obs["origin"].astype(str) + " " + obs["region"].astype(str))
 
@@ -38,7 +38,7 @@ def main():
     for cat in LEGEND_ORDER:
         m = (obs["cat"] == cat).values
         ax.scatter(emb[m, 0], emb[m, 1], s=3, c=CAT_COLORS[cat], edgecolors="black",
-                   linewidths=0.05, alpha=0.85, label=cat, rasterized=True)
+                   linewidths=0.05, alpha=0.85, label=cat)  # vector: PDF stays sharp
 
     ax.set_xticks([]); ax.set_yticks([])
     for spine in ax.spines.values():

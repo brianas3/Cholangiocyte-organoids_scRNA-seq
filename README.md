@@ -40,13 +40,19 @@ pipeline -- the matrix itself (>2 GB) is not committed to this repo.
    clusters) + UMAP, run once on the primary-tissue-only subset (Fig. 1B scope)
    and once on the full dataset (Fig. 2A scope); ARI/AMI of clusters vs.
    origin/region across 10 seeds.
-4. `05_fig1b.py` / `06_fig2a.py` -- render the two UMAP figures.
+4. `04b_primary_nocorrect.py` / `04c_full_nocorrect.py` -- rebuild the primary-only
+   and full-dataset UMAPs **without Harmony**: donor/sample centroids are shifted
+   onto their region (or origin x region) centroid, never across regions, plus
+   removal of Leiden clusters <1% of cells (04b). Reason: each donor/sample belongs
+   to a single region, so Harmony on donor/sample erased region structure.
+5. `05_fig1b.py` / `06_fig2a.py` -- render the two UMAP figures (from 04b / 04c;
+   vector PDF + 600 dpi PNG). `05b_seed_robustness.py` -- UMAP seeds 0-4.
 
 ## Key results (see `document/07_summary.md` for full detail)
 
 | | This reproduction | Paper |
 |---|---|---|
-| Primary cells / individuals (Fig. 1B) | 7,316 / 10 | 7,295 / 10 |
+| Primary cells / individuals (Fig. 1B) | 7,205 / 10 (after small-cluster removal) | 7,295 / 10 |
 | Full dataset cells (Fig. 2A) | 40,732 | 35,603 |
 | Louvain ARI vs. origin (mean, 10 seeds) | 0.65 | >0.95 |
 | Louvain ARI vs. region (mean, 10 seeds) | 0.01 | <0.30 |
@@ -59,8 +65,11 @@ than the paper's, attributable to the deviations below.
 
 ## Deviations from the paper's Methods
 
-- **Batch correction**: paper used `scran::fastMNN`; this repo uses **Harmony**
-  (`harmonypy`), because `bioconductor-batchelor` has no osx-arm64 conda build
+- **Batch correction**: paper used `scran::fastMNN`. Figures here use
+  **within-region donor/sample mean-centering** (a mean shift only, not fastMNN);
+  Harmony was dropped for the figures because region is nested in donor. The
+  Louvain ARI/AMI above still uses the Harmony embedding and has not been
+  re-run. fastMNN itself was not used because `bioconductor-batchelor` has no osx-arm64 conda build
   and the pip fallback `mnnpy` fails to compile (Apple clang lacks `-fopenmp`).
 - **Underlying counts**: EBI Atlas re-quantification (Alevin-fry + Ensembl
   reference + emptyDrops), not the authors' original CellRanger run (never
